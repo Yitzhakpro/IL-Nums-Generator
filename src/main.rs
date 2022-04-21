@@ -17,7 +17,8 @@ use std::{
 struct GenArgs {
     #[clap(short, long,
         help = "separated prefixes by space (050 052 054)",
-        multiple_values = true
+        multiple_values = true,
+        required = true
     )]
     prefixes: Vec<String>,
 
