@@ -7,7 +7,9 @@ use std::{
 
     fs,
     fs::OpenOptions,
-    io::{Write, Read},
+    io::{ Write, Read },
+
+    time::{ Instant }
 };
 
 #[derive(Parser, Debug)]
@@ -36,6 +38,8 @@ fn main() {
     let slient_mode = gen_arg.silent;
 
     let mut thread_handles: Vec<JoinHandle<()>> = Vec::new();
+
+    let start_time = Instant::now();
 
     for pref in gen_arg.prefixes.iter()  {
         let corrected_prefix = if !pref.starts_with("0") {
@@ -122,5 +126,8 @@ fn main() {
         };
     }
 
+    let duration = start_time.elapsed();
+
     println!("Finished generating, enjoy!");
+    println!("Time took to finish: {:#?}", duration);
 }
