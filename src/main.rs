@@ -5,7 +5,9 @@ use std::{
     thread,
     thread::JoinHandle,
 
-    fs::OpenOptions, io::Write
+    fs,
+    fs::OpenOptions,
+    io::{Write, Read},
 };
 
 #[derive(Parser, Debug)]
@@ -73,9 +75,52 @@ fn main() {
         thread_handles.push(handle);
     }
 
+    // joining threads
     for handle in thread_handles {
         handle.join().unwrap();
     }
 
+    let mut final_file = match OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open("final_il_nums.txt") {
+            Err(e) => panic!("Could not create final il nums file, {}", e),
+            Ok(file) => file
+        };
 
+    // combine temp files & delete temp files
+    for pref in gen_arg.prefixes.iter() {
+        let file_name = if !pref.starts_with("0") {
+            ".".to_string() + "0" + &pref
+        } else {
+            ".".to_string() + &pref
+        };
+
+        let mut file_data = String::new();
+
+        let mut prefix_file = match OpenOptions::new()
+            .read(true)
+            .open(&file_name) {
+                Err(e) => panic!("Could not open prefix file: {}", e),
+                Ok(file) => file
+            };
+
+        match prefix_file.read_to_string(&mut file_data) {
+            Err(e) => panic!("Could not read from prefix file: {}", e),
+            Ok(usize) => ()
+        };
+
+        match final_file.write_all(file_data.as_bytes()) {
+            Err(e) => panic!("Could not write file data to final il nums: {}", e),
+            Ok(()) => ()
+        };
+
+        // delete temp file after writing to final file
+        match fs::remove_file(file_name) {
+            Err(e) => panic!("Could not delete temp prefix file: {}", e),
+            Ok(()) => ()
+        };
+    }
+
+    println!("Finished generating, enjoy!");
 }
