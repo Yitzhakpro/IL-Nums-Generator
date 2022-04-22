@@ -1,1 +1,6 @@
+# build
 /target
+
+# temp files & il nums files
+.0*
+il_nums.txt

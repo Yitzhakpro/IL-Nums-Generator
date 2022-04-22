@@ -46,6 +46,7 @@ fn main() {
     let gen_arg = GenArgs::parse();
     let slient_mode = gen_arg.silent;
     let prefixes = gen_arg.prefixes;
+    let output_file_name = gen_arg.output_file;
 
     let mut thread_handles: Vec<JoinHandle<()>> = Vec::new();
 
@@ -91,7 +92,7 @@ fn main() {
         .write(true)
         .create(true)
         .truncate(true)
-        .open("final_il_nums.txt")
+        .open(&output_file_name)
         .expect("Could not create final il nums, make sure this program have enough permissions.");
 
     // combine temp files & delete temp files
