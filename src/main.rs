@@ -97,7 +97,7 @@ fn main() {
 
     // combine temp files & delete temp files
     for pref in prefixes.iter() {
-        let file_name = get_correct_prefix(&pref);
+        let file_name = String::from(".") + &get_correct_prefix(&pref);
 
         let mut file_data = String::new();
 
