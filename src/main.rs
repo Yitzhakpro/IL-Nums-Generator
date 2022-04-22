@@ -34,20 +34,25 @@ struct GenArgs {
     output_file: String
 }
 
+fn get_correct_prefix(prefix: &String) -> String {
+    if !prefix.starts_with("0") {
+        String::from("0") + prefix
+    } else {
+        String::from(prefix)
+    }
+}
+
 fn main() {
     let gen_arg = GenArgs::parse();
     let slient_mode = gen_arg.silent;
+    let prefixes = gen_arg.prefixes;
 
     let mut thread_handles: Vec<JoinHandle<()>> = Vec::new();
 
     let start_time = Instant::now();
 
-    for pref in gen_arg.prefixes.iter()  {
-        let corrected_prefix = if !pref.starts_with("0") {
-            String::from("0") + pref
-        } else {
-            String::from(pref)
-        };
+    for pref in prefixes.iter()  {
+        let corrected_prefix = get_correct_prefix(&pref);
 
         if !slient_mode {
             println!("Generating nums for: {}", corrected_prefix);
@@ -94,12 +99,8 @@ fn main() {
         };
 
     // combine temp files & delete temp files
-    for pref in gen_arg.prefixes.iter() {
-        let file_name = if !pref.starts_with("0") {
-            ".".to_string() + "0" + &pref
-        } else {
-            ".".to_string() + &pref
-        };
+    for pref in prefixes.iter() {
+        let file_name = get_correct_prefix(&pref);
 
         let mut file_data = String::new();
 
