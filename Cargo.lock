@@ -86,8 +86,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "il_nums_gen"
-version = "0.1.0"
+name = "il_numbers_generator"
+version = "1.0.0"
 dependencies = [
  "clap",
  "pad",
