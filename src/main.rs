@@ -62,8 +62,9 @@ fn main() {
             let prefix_file_name = String::from(".") + &corrected_prefix;
 
             let mut prefix_file = OpenOptions::new()
-                .append(true)
+                .write(true)
                 .create(true)
+                .truncate(true)
                 .open(&prefix_file_name)
                 .expect("Could not create temp prefix file, make sure this program have enough permissions.");
 
@@ -89,6 +90,7 @@ fn main() {
     let mut final_file = OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open("final_il_nums.txt")
         .expect("Could not create final il nums, make sure this program have enough permissions.");
 
