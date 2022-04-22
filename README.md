@@ -29,7 +29,15 @@ this will result the file (il_nums.txt):
 
 **note: you can enter multiple prefixes seperated by comma/space**
 
----
+```bash
+$ ./il_numbers_generator -p 050 054 052
+```
+
+```bash
+$ ./il_numbers_generator -p 050, 054, 052
+```
+
+<br/>
 
 example of changing final output file name:
 
@@ -49,5 +57,3 @@ this will result the file (somthing_else.txt):
 0500000007
 ...
 ```
-
----
