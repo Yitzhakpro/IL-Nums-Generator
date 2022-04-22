@@ -9,7 +9,7 @@ use std::{
     fs::OpenOptions,
     io::{ Write, Read },
 
-    time::{ Instant }
+    time::Instant
 };
 
 #[derive(Parser, Debug)]
@@ -61,13 +61,11 @@ fn main() {
         let handle = thread::spawn(move || {
             let prefix_file_name = String::from(".") + &corrected_prefix;
 
-            let mut prefix_file = match OpenOptions::new()
+            let mut prefix_file = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open(&prefix_file_name) {
-                    Err(e) => panic!("Could not create {}: {}", prefix_file_name, e),
-                    Ok(file) => file
-                };
+                .open(&prefix_file_name)
+                .expect("Could not create temp prefix file, make sure this program have enough permissions.");
 
             for i in 0i32..9999999 {
                 let num_to_string = i.to_string();
@@ -75,10 +73,8 @@ fn main() {
 
                 let full_il_num = String::from(&corrected_prefix) + &padded_num + "\n";
 
-                match prefix_file.write_all(full_il_num.as_bytes()) {
-                    Err(e) => panic!("Could not write num to: {}: {}", prefix_file_name, e),
-                    Ok(()) => ()
-                };
+                prefix_file.write_all(full_il_num.as_bytes())
+                    .expect("Could not write number to temp prefix file.");
             }
         });
 
@@ -90,13 +86,11 @@ fn main() {
         handle.join().unwrap();
     }
 
-    let mut final_file = match OpenOptions::new()
+    let mut final_file = OpenOptions::new()
         .write(true)
         .create(true)
-        .open("final_il_nums.txt") {
-            Err(e) => panic!("Could not create final il nums file, {}", e),
-            Ok(file) => file
-        };
+        .open("final_il_nums.txt")
+        .expect("Could not create final il nums, make sure this program have enough permissions.");
 
     // combine temp files & delete temp files
     for pref in prefixes.iter() {
@@ -104,28 +98,20 @@ fn main() {
 
         let mut file_data = String::new();
 
-        let mut prefix_file = match OpenOptions::new()
+        let mut prefix_file = OpenOptions::new()
             .read(true)
-            .open(&file_name) {
-                Err(e) => panic!("Could not open prefix file: {}", e),
-                Ok(file) => file
-            };
+            .open(&file_name)
+            .expect("Could not open temp prefix file.");
 
-        match prefix_file.read_to_string(&mut file_data) {
-            Err(e) => panic!("Could not read from prefix file: {}", e),
-            Ok(usize) => ()
-        };
+        prefix_file.read_to_string(&mut file_data)
+            .expect("Could not read from temp prefix file.");
 
-        match final_file.write_all(file_data.as_bytes()) {
-            Err(e) => panic!("Could not write file data to final il nums: {}", e),
-            Ok(()) => ()
-        };
+        final_file.write_all(file_data.as_bytes())
+            .expect("Could not write to final il nums file.");
 
-        // delete temp file after writing to final file
-        match fs::remove_file(file_name) {
-            Err(e) => panic!("Could not delete temp prefix file: {}", e),
-            Ok(()) => ()
-        };
+        // delete temp file after writing to final file, not important if could not delete
+        fs::remove_file(file_name)
+            .unwrap();
     }
 
     let duration = start_time.elapsed();
