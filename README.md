@@ -37,4 +37,17 @@ example of changing final output file name:
 $ ./il_numbers_generator -p 050 -o somthing_else.txt
 ```
 
+this will result the file (somthing_else.txt):
+
+```
+0500000001
+0500000002
+0500000003
+0500000004
+0500000005
+0500000006
+0500000007
+...
+```
+
 ---
